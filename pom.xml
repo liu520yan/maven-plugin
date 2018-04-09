@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.plugin.test</groupId><!-- 项目包名 -->
+    <artifactId>maven-plugin-test</artifactId><!-- 项目名称 -->
+    <version>1.0</version><!-- 版本 -->
+
+    <packaging>maven-plugin</packaging><!-- 打包的方式 （war、jar、maven-plugin(自定义开发的方式)）-->
+
+    <!-- FIXME change it to the project's website -->
+    <url>http://maven.apache.org</url>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <!-- maven 开发插件需要的依赖 start -->
+        <dependency><!--使用doc的方式-->
+            <groupId>org.apache.maven</groupId>
+            <artifactId>maven-plugin-api</artifactId>
+            <version>2.0</version>
+        </dependency>
+        <dependency><!--使用注解的方式-->
+            <groupId>org.apache.maven.plugin-tools</groupId>
+            <artifactId>maven-plugin-annotations</artifactId>
+            <version>3.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- maven 开发插件需要的依赖 end -->
+        <dependency>
+            <groupId>org.codehaus.plexus</groupId>
+            <artifactId>plexus-utils</artifactId>
+            <version>3.0.8</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <!-- 自定义插件的使用示例 -->
+    <!--
+        maven 执行自定义插件goal命令调用的顺序有两种：
+        第一种：
+                groupId:artifactId:version:goal
+        当前示例：com.plugin.test:maven-plugin-test:1.0:sayhi
+        需要加插件（如果需要设置自定义插件依赖的参数，方可添加，否则的话，不需要添加）
+                1).maven-plugin-test(自定义开发插件、设置自定义插件依赖的参数)
+        第二种：
+                goalPrefix:goal
+        当前示例：statis:sayhi
+        需要加插件
+                1).maven-plugin-plugin(可以定义前缀、和goal执行时所需参数)
+                2).maven-plugin-test(自定义开发插件、设置自定义插件依赖的参数)
+
+        在例子里已经有，自行查看
+    -->
+    <build>
+        <pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-plugin-plugin</artifactId>
+                <version>3.2</version>
+                <executions>
+                    <execution>
+                        <id>default-descriptor</id>
+                        <goals>
+                            <goal>descriptor</goal>
+                        </goals>
+                        <phase>process-classes</phase>
+                    </execution>
+                    <execution>
+                        <id>help-descriptor</id>
+                        <goals>
+                            <goal>helpmojo</goal>
+                        </goals>
+                        <phase>process-classes</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
+                    <goalPrefix>statis</goalPrefix><!-- 插件执行命令前缀 -->
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.plugin.test</groupId>
+                <artifactId>maven-plugin-test</artifactId>
+                <version>1.0</version>
+                <configuration>
+                    <age>28</age><!-- goal执行所需参数指定位置，必须与goal目标的属性一致 -->
+                </configuration>
+            </plugin>
+        </plugins>
+        </pluginManagement>
+    </build>
+
+
+</project>
